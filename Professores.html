@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Professor - Casa da Música</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Link para o arquivo CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff; /* Fundo do corpo alterado para branco */
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #323643; /* Cor do cabeçalho */
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #93deff; /* Fundo do formulário em azul claro */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #606470; /* Borda dos inputs */
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background-color: white; /* Fundo branco para as caixas de entrada */
+        }
+        .form-group input:focus {
+            border-color: #82c1ff; /* Azul mais claro ao focar */
+            outline: none;
+        }
+        .form-group input:last-child, .form-group textarea:last-child, .form-group select:last-child {
+            margin-right: 0;
+        }
+        button {
+            background-color: #323643; /* Azul do botão Cadastrar */
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            display: flex; /* Flex para alinhar o ícone e o texto */
+            align-items: center; /* Alinhamento vertical do ícone */
+            justify-content: center; /* Centraliza o texto e o ícone */
+        }
+        button:hover {
+            background-color: #606470; /* Tom mais claro ao passar o mouse */
+        }
+        .table-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #93deff; /* Fundo da tabela em azul claro */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd; /* Borda da tabela */
+            font-size: 1em;
+        }
+        th {
+            background-color: #323643; /* Cabeçalho da tabela */
+            color: white;
+            font-weight: bold;
+        }
+        .button-container {
+            display: flex; /* Flex para colocar os botões lado a lado */
+            gap: 10px; /* Espaço entre os botões */
+        }
+        .button-update, .button-delete {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+            display: flex; /* Flex para alinhar o ícone e o texto */
+            align-items: center; /* Alinhamento vertical do ícone */
+        }
+        .button-update {
+            background-color: #28a745; /* Verde para Atualizar */
+            color: white;
+        }
+        .button-delete {
+            background-color: #dc3545; /* Vermelho para Excluir */
+            color: white;
+        }
+        .button-update:hover {
+            background-color: #218838; /* Cor ao passar o mouse no botão Atualizar */
+        }
+        .button-delete:hover {
+            background-color: #c82333; /* Cor ao passar o mouse no botão Excluir */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cadastro de Professor</h1>
+
+    <form method="POST" action="/cadastrar-professor" onsubmit="inverterCampos(); return validarCPF();">
+        <div class="form-group">
+            <input type="text" name="nome_completo" placeholder="Nome Completo" required style="flex: 3;">
+            <input type="text" id="cpf" name="cpf" placeholder="XXX.XXX.XXX-XX" required maxlength="14" onblur="formatCPF(this)" style="flex: 1;">
+        </div>
+        <div class="form-group">
+            <input type="text" name="telefone" placeholder="Telefone" required maxlength="15" onblur="formatTelefone(this)">
+            <input type="email" name="email" placeholder="E-mail" required style="flex: 1;">
+        </div>
+        <div class="form-group">
+            <input type="date" id="data_nascimento" name="data_nascimento" required oninput="calcularIdade()" style="flex: 0.2;">
+            <input type="text" id="idade" name="idade" placeholder="Idade" readonly style="flex: 0.2; margin-left: 10px;">
+            <input type="text" name="sexo" placeholder="Sexo" required style="flex: 0.2; margin-left: 10px;">
+        </div>
+        <div class="form-group">
+            <input type="text" id="cep" name="cep" placeholder="CEP" required style="flex: 0.2;" onblur="buscarEndereco()">
+            <input type="text" id="endereco" name="endereco" placeholder="Endereço" required style="flex: 1;" readonly>
+        </div>
+        <div class="form-group">
+            <input type="text" name="numero" placeholder="Número" required style="flex: 0.2;">
+            <input type="text" name="bairro" id="bairro" placeholder="Bairro" required style="flex: 0.4;" readonly>
+            <input type="text" name="cidade" id="cidade" placeholder="Cidade" required style="flex: 0.3;" readonly>
+            <select name="estado" id="estado" required style="flex: 0.2;" readonly>
+                <option value="SP">SP</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" id="complemento" name="complemento" placeholder="Complemento" style="flex: 0.4;">
+        </div>
+        <div class="form-group">
+            <textarea name="observacao" placeholder="Observação" rows="4" style="flex: 1;"></textarea>
+        </div>
+        <button type="submit"><i class="fas fa-plus"></i> Cadastrar Professor</button>
+    </form>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>João Silva</td>
+                    <td>123.456.789-00</td>
+                    <td>
+                        <div class="button-container">
+                            <button class="button-update"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Adicione mais linhas conforme necessário -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function calcularIdade() {
+            const dataNasc = document.getElementById('data_nascimento').value;
+            if (dataNasc) {
+                const anoNasc = new Date(dataNasc).getFullYear();
+                const anoAtual = new Date().getFullYear();
+                const idade = anoAtual - anoNasc;
+                document.getElementById('idade').value = idade;
+            }
+        }
+
+        function formatCPF(cpfInput) {
+            let cpf = cpfInput.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+            if (cpf.length > 11) {
+                cpf = cpf.slice(0, 11); // Limita a 11 dígitos
+            }
+            cpfInput.value = cpf.replace(/(\d{3})(\d)/, '$1.$2')
+                                 .replace(/(\d{3})(\d)/, '$1.$2')
+                                 .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+
+        function buscarEndereco() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById('endereco').value = data.logradouro;
+                            document.getElementById('bairro').value = data.bairro;
+                            document.getElementById('cidade').value = data.localidade;
+                            document.getElementById('estado').value = data.uf;
+                        } else {
+                            alert('CEP não encontrado.');
+                        }
+                    })
+                    .catch(error => console.error('Erro:', error));
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+

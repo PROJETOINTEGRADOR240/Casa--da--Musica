@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Open index.html",
+            "file": "file:///C:/Users/lg/Desktop/casa%20da%20musica/index.html"
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Open script.js",
+            "file": "file:///C:/Users/lg/Desktop/casa%20da%20musica/Back%20end%20Casa%20da%20Musica/script.js"
+        }
+    ]
+}

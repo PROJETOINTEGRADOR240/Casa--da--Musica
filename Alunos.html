@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Alunos - Casa da Música</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Cadastro de Alunos</h1>
+
+    <form method="POST" action="/cadastrar-aluno" onsubmit="inverterCampos(); return validarCPF();">
+        <div class="form-group">
+            <input type="text" name="nome_completo" placeholder="Nome Completo" required>
+            <input type="text" id="cpf" name="cpf" placeholder="XXX.XXX.XXX-XX" required maxlength="14" onblur="formatCPF(this)">
+        </div>
+        <div class="form-group">
+            <input type="text" name="telefone" placeholder="Telefone" required maxlength="15" onblur="formatTelefone(this)">
+            <input type="email" name="email" placeholder="E-mail" required>
+        </div>
+        <div class="form-group">
+            <input type="date" id="data_nascimento" name="data_nascimento" placeholder="Data de Nascimento" required oninput="calcularIdade()">
+            <input type="text" id="idade" name="idade" placeholder="Idade" readonly>
+            <input type="text" name="sexo" placeholder="Sexo" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="nome_responsavel" name="nome_responsavel" placeholder="Nome do Responsável" required>
+            <input type="text" id="cpf_responsavel" name="cpf_responsavel" placeholder="CPF do Responsável" required maxlength="14" onblur="formatCPF(this)">
+        </div>
+        <div class="form-group">
+            <input type="text" id="cep" name="cep" placeholder="CEP" required onblur="buscarEndereco()">
+            <input type="text" id="endereco" name="endereco" placeholder="Endereço" required readonly>
+        </div>
+        <div class="form-group">
+            <input type="text" name="numero" placeholder="Número" required>
+            <input type="text" name="bairro" id="bairro" placeholder="Bairro" required readonly>
+            <input type="text" name="cidade" id="cidade" placeholder="Cidade" required readonly>
+            <select name="estado" id="estado" required readonly>
+                <option value="SP">SP</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" id="complemento" name="complemento" placeholder="Complemento">
+        </div>
+        <div class="form-group">
+            <textarea name="observacao" placeholder="Observação" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <select name="professor" required>
+                <option value="">Professor</option>
+            </select>
+            <select name="disciplina" required>
+                <option value="">Disciplina</option>
+            </select>
+        </div>
+        <button type="submit"><i class="fas fa-plus"></i> Cadastrar Aluno</button>
+    </form>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>João Silva</td>
+                    <td>123.456.789-00</td>
+                    <td>
+                        <div class="button-container">
+                            <button class="button-update"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Suas funções JavaScript aqui...
+    </script>
+
+</body>
+</html>

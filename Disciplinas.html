@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Disciplinas - Casa da Música</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link para o arquivo CSS externo -->
+</head>
+<body>
+
+    <h1>Cadastro de Disciplinas</h1>
+
+    <form>
+        <div class="form-group">
+            <label for="idDisciplina">ID da Disciplina:</label>
+            <input type="number" id="idDisciplina" placeholder="ID" required>
+        </div>
+        <div class="form-group">
+            <label for="nomeDisciplina">Nome da Disciplina:</label>
+            <input type="text" id="nomeDisciplina" placeholder="Nome" required>
+            <label for="cargaHoraria">Carga Horária:</label>
+            <input type="time" id="cargaHoraria" required>
+        </div>
+        <div class="form-group">
+            <label for="turno">Turno:</label>
+            <select id="turno" required>
+                <option value="">Selecione o Turno</option>
+                <option value="matutino">Matutino</option>
+                <option value="vespertino">Vespertino</option>
+                <option value="noturno">Noturno</option>
+            </select>
+        </div>
+        <button type="submit"><i class="fas fa-plus"></i> Cadastrar</button>
+    </form>
+
+    <div class="table-container">
+        <h2>Lista de Disciplinas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID da Disciplina</th>
+                    <th>Nome</th>
+                    <th>Carga Horária</th>
+                    <th>Turno</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Teoria Musical</td>
+                    <td>02:00</td>
+                    <td>Matutino</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="button-update"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Violão Básico</td>
+                    <td>01:30</td>
+                    <td>Vespertino</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="button-update"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Adicione mais linhas conforme necessário -->
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
