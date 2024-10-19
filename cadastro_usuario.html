@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário - Casa da Música</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Cadastro de Usuário</h1>
+
+    <form id="form-usuario" method="POST" onsubmit="cadastrarUsuario(event); return validarCPF();">
+        <div class="form-group">
+            <input type="text" name="nome_completo" placeholder="Nome Completo" required style="flex: 3;">
+            <input type="text" id="cpf" name="cpf" placeholder="XXX.XXX.XXX-XX" required maxlength="14" onblur="formatCPF(this)" style="flex: 1;">
+        </div>
+        <div class="form-group">
+            <input type="text" name="telefone" placeholder="Telefone" required maxlength="15" onblur="formatTelefone(this)">
+            <input type="text" name="email" placeholder="E-mail" required style="flex: 1;"> <!-- Alterado para type="text" -->
+        </div>
+        <div class="form-group">
+            <input type="date" id="data_nascimento" name="data_nascimento" required oninput="calcularIdade()" style="flex: 0.2;">
+            <input type="text" id="idade" name="idade" placeholder="Idade" readonly style="flex: 0.2; margin-left: 10px;">
+            <input type="text" name="sexo" placeholder="Sexo" required style="flex: 0.2; margin-left: 10px;">
+        </div>
+        <div class="form-group">
+            <input type="text" id="cep" name="cep" placeholder="CEP" required style="flex: 0.2;" onblur="buscarEndereco()">
+            <input type="text" id="endereco" name="endereco" placeholder="Endereço" required style="flex: 1;" readonly>
+        </div>
+        <div class="form-group">
+            <input type="text" name="numero" placeholder="Número" required style="flex: 0.2;">
+            <input type="text" name="bairro" id="bairro" placeholder="Bairro" required style="flex: 0.4;" readonly>
+            <input type="text" name="cidade" id="cidade" placeholder="Cidade" required style="flex: 0.3;" readonly>
+            <select name="estado" id="estado" required style="flex: 0.2;" readonly>
+                <option value="SP">SP</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" id="complemento" name="complemento" placeholder="Complemento" style="flex: 0.4;">
+        </div>
+        <div class="form-group">
+            <textarea name="observacao" placeholder="Observação" rows="4" style="flex: 1;"></textarea>
+        </div>
+        <button type="submit" id="submit-btn"><i class="fas fa-plus"></i> Cadastrar Usuário</button>
+        <button type="button" onclick="voltarPagina()">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+    </form>
+
+    <div class="table-container">
+        <h2>Lista de Usuários</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID do Usuário</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="usuarios-tbody">
+                <tr>
+                    <td>201</td>
+                    <td>jose</td>
+                    <td>234.567.891-09</td>
+                    <td class="action-buttons">
+                        <button class="button-update" onclick="editarUsuario(201)"><i class="fas fa-edit"></i> Atualizar</button>
+                        <button class="button-delete" onclick="excluirUsuario(201)"><i class="fas fa-trash"></i> Excluir</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>205</td>
+                    <td>Rosa</td>
+                    <td>369.852.147-06</td>
+                    <td class="action-buttons">
+                        <button class="button-update" onclick="editarUsuario(205)"><i class="fas fa-edit"></i> Atualizar</button>
+                        <button class="button-delete" onclick="excluirUsuario(205)"><i class="fas fa-trash"></i> Excluir</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let usuarios = [
+            { id: 201, nome: 'jose', cpf: '234.567.891-09' },
+            { id: 205, nome: 'Rosa', cpf: '369.852.147-06' }
+        ]; // Array para armazenar os usuários
+
+        function calcularIdade() {
+            const dataNasc = document.getElementById('data_nascimento').value;
+            if (dataNasc) {
+                const anoNasc = new Date(dataNasc).getFullYear();
+                const anoAtual = new Date().getFullYear();
+                const idade = anoAtual - anoNasc;
+                document.getElementById('idade').value = idade;
+            }
+        }
+
+        function formatCPF(cpfInput) {
+            let cpf = cpfInput.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+            if (cpf.length > 11) {
+                cpf = cpf.slice(0, 11); // Limita a 11 dígitos
+            }
+            cpfInput.value = cpf.replace(/(\d{3})(\d)/, '$1.$2')
+                                 .replace(/(\d{3})(\d)/, '$1.$2')
+                                 .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+
+        function formatTelefone(telefoneInput) {
+            let telefone = telefoneInput.value.replace(/\D/g, '');
+            if (telefone.length === 11) {
+                telefoneInput.value = telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (telefone.length === 10) {
+                telefoneInput.value = telefone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            }
+        }
+
+        function buscarEndereco() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById('endereco').value = data.logradouro;
+                            document.getElementById('bairro').value = data.bairro;
+                            document.getElementById('cidade').value = data.localidade;
+                            document.getElementById('estado').value = data.uf;
+                        } else {
+                            alert('CEP não encontrado.');
+                        }
+                    })
+                    .catch(error => console.error('Erro:', error));
+            }
+        }
+
+        function cadastrarUsuario(event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            const nome = document.querySelector('input[name="nome_completo"]').value;
+            const cpf = document.getElementById('cpf').value;
+            const id = document.getElementById('submit-btn').dataset.userId;
+
+            if (id) {
+                // Atualiza o usuário existente
+                const usuario = usuarios.find(u => u.id === Number(id));
+                usuario.nome = nome;
+                usuario.cpf = cpf;
+            } else {
+                // Adiciona um novo usuário
+                const newId = usuarios.length ? Math.max(...usuarios.map(u => u.id)) + 1 : 1;
+                usuarios.push({ id: newId, nome, cpf });
+            }
+
+            atualizarTabela();
+            document.querySelector('#form-usuario').reset(); // Limpa o formulário
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Cadastrar Usuário';
+            delete document.getElementById('submit-btn').dataset.userId; // Limpa o ID do usuário
+        }
+
+        function atualizarTabela() {
+            const tbody = document.getElementById('usuarios-tbody');
+            tbody.innerHTML = ''; // Limpa a tabela
+
+            usuarios.forEach(usuario => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${usuario.id}</td>
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.cpf}</td>
+                    <td class="action-buttons">
+                        <button class="button-update" onclick="editarUsuario(${usuario.id})"><i class="fas fa-edit"></i> Atualizar</button>
+                        <button class="button-delete" onclick="excluirUsuario(${usuario.id})"><i class="fas fa-trash"></i> Excluir</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function editarUsuario(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            document.querySelector('input[name="nome_completo"]').value = usuario.nome;
+            document.getElementById('cpf').value = usuario.cpf;
+
+            // Altera o botão de envio para "Atualizar"
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Atualizar Usuário';
+            document.getElementById('submit-btn').dataset.userId = usuario.id; // Armazena o ID do usuário para atualização
+        }
+
+        function excluirUsuario(id) {
+            usuarios = usuarios.filter(u => u.id !== id); // Remove o usuário do array
+            atualizarTabela();
+        }
+
+        function voltarPagina() {
+            window.location.href = 'index.html'; // Redireciona para a página index.html
+        }
+    </script>
+</body>
+</html>
+

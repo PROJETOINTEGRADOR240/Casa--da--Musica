@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Disciplinas - Casa da Música</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link para o arquivo CSS externo -->
+</head>
+<body>
+
+    <h1>Cadastro de Disciplinas</h1>
+
+    <form id="form-disciplina" onsubmit="return cadastrarDisciplina(event)">
+        <div class="form-group">
+            <label for="idDisciplina">ID da Disciplina:</label>
+            <input type="number" id="idDisciplina" placeholder="ID" required>
+        </div>
+        <div class="form-group">
+            <label for="nomeDisciplina">Nome da Disciplina:</label>
+            <input type="text" id="nomeDisciplina" placeholder="Nome" required>
+            <label for="cargaHoraria">Carga Horária:</label>
+            <input type="time" id="cargaHoraria" required>
+        </div>
+        <div class="form-group">
+            <label for="turno">Turno:</label>
+            <select id="turno" required>
+                <option value="">Selecione o Turno</option>
+                <option value="matutino">Matutino</option>
+                <option value="vespertino">Vespertino</option>
+                <option value="noturno">Noturno</option>
+            </select>
+        </div>
+        <button type="submit" id="submit-btn"><i class="fas fa-plus"></i> Cadastrar Disciplina</button>
+        <button type="button" onclick="voltarPagina()">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        
+    </form>
+
+    <div class="table-container">
+        <h2>Lista de Disciplinas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID da Disciplina</th>
+                    <th>Nome</th>
+                    <th>Carga Horária</th>
+                    <th>Turno</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="disciplinas-tbody">
+                <tr>
+                    <td>1</td>
+                    <td>Teoria Musical</td>
+                    <td>02:00</td>
+                    <td>Matutino</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="button-update" onclick="editarDisciplina(1)"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete" onclick="excluirDisciplina(1, this)"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Violão Básico</td>
+                    <td>01:30</td>
+                    <td>Vespertino</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="button-update" onclick="editarDisciplina(2)"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete" onclick="excluirDisciplina(2, this)"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let disciplinas = [
+            { id: 1, nome: 'Teoria Musical', cargaHoraria: '02:00', turno: 'matutino' },
+            { id: 2, nome: 'Violão Básico', cargaHoraria: '01:30', turno: 'vespertino' }
+        ]; // Array para armazenar as disciplinas
+
+        // Função de validação do formulário
+        function validarFormulario() {
+            // Lógica de validação do formulário
+            return true;
+        }
+
+        // Função para voltar à página anterior
+        function voltarPagina() {
+            window.location.href = 'index.html'; // Redireciona para a página inicial
+        }
+
+        // Função para cadastrar ou atualizar a disciplina
+        function cadastrarDisciplina(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            const id = document.getElementById('idDisciplina').value;
+            const nome = document.getElementById('nomeDisciplina').value;
+            const cargaHoraria = document.getElementById('cargaHoraria').value;
+            const turno = document.getElementById('turno').value;
+
+            const index = disciplinas.findIndex(d => d.id == id);
+            if (index >= 0) {
+                // Atualiza disciplina existente
+                disciplinas[index] = { id: Number(id), nome, cargaHoraria, turno };
+            } else {
+                // Cadastra nova disciplina
+                disciplinas.push({ id: Number(id), nome, cargaHoraria, turno });
+            }
+
+            atualizarTabela();
+            document.getElementById('form-disciplina').reset(); // Limpa o formulário
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-plus"></i> Cadastrar Disciplina';
+        }
+
+        function atualizarTabela() {
+            const tbody = document.getElementById('disciplinas-tbody');
+            tbody.innerHTML = ''; // Limpa a tabela
+
+            disciplinas.forEach(disciplina => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${disciplina.id}</td>
+                    <td>${disciplina.nome}</td>
+                    <td>${disciplina.cargaHoraria}</td>
+                    <td>${disciplina.turno}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="button-update" onclick="editarDisciplina(${disciplina.id})"><i class="fas fa-edit"></i> Atualizar</button>
+                            <button class="button-delete" onclick="excluirDisciplina(${disciplina.id}, this)"><i class="fas fa-trash"></i> Excluir</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function editarDisciplina(id) {
+            const disciplina = disciplinas.find(d => d.id === id);
+            document.getElementById('idDisciplina').value = disciplina.id;
+            document.getElementById('nomeDisciplina').value = disciplina.nome;
+            document.getElementById('cargaHoraria').value = disciplina.cargaHoraria;
+            document.getElementById('turno').value = disciplina.turno;
+
+            // Atualiza o botão de enviar para "Atualizar"
+            document.getElementById('submit-btn').innerHTML = '<i class="fas fa-save"></i> Atualizar Disciplina';
+        }
+
+        // Função para excluir a disciplina (no front-end e no banco de dados)
+        function excluirDisciplina(id, btn) {
+            const confirmacao = confirm("Tem certeza que deseja excluir esta disciplina?");
+            if (confirmacao) {
+                // Remover disciplina do banco de dados
+                fetch(`/excluir-disciplina/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Disciplina excluída com sucesso!");
+
+                        // Remover a linha da tabela no front-end
+                        const row = btn.closest('tr');
+                        row.remove();
+
+                        // Remove a disciplina do array
+                        disciplinas = disciplinas.filter(d => d.id !== id);
+                    } else {
+                        alert("Erro ao excluir a disciplina.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro:", error);
+                    alert("Ocorreu um erro ao tentar excluir a disciplina.");
+                });
+            }
+        }
+    </script>
+</body>
+</html>

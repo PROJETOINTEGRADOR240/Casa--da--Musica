@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Professores</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Seu CSS aqui -->
+</head>
+<body>
+    <h1>Lista de Professores</h1>
+    
+    <form action="/add" method="POST">
+        <!-- Campos para inserir professor -->
+        <input type="text" name="nome" placeholder="Nome" required>
+        <input type="text" name="cpf_cnpj" placeholder="CPF ou CNPJ" required>
+        <input type="text" name="telefone" placeholder="Telefone">
+        <input type="email" name="email" placeholder="E-mail">
+        <input type="date" name="data_nasc" placeholder="Data de Nascimento">
+        <input type="number" name="idade" placeholder="Idade">
+        <input type="text" name="sexo" placeholder="Sexo">
+        <input type="text" name="cor" placeholder="Cor">
+        <input type="text" name="cep" placeholder="CEP">
+        <input type="text" name="endereco" placeholder="Endereço">
+        <input type="text" name="numero" placeholder="Número">
+        <input type="text" name="bairro" placeholder="Bairro">
+        <input type="text" name="cidade" placeholder="Cidade">
+        <input type="text" name="estado" placeholder="Estado">
+        <input type="text" name="complemento" placeholder="Complemento">
+        <textarea name="obs" placeholder="Observações"></textarea>
+        <button type="submit">Adicionar Professor</button>
+    </form>
+
+    <h2>Professores Cadastrados</h2>
+    <ul>
+        <% professores.forEach(professor => { %>
+            <li>
+                <%= professor.nome %>
+                <a href="/update/<%= professor.idprofessor %>">Editar</a>
+                <a href="/delete/<%= professor.idprofessor %>">Excluir</a>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>
